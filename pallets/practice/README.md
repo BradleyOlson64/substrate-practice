@@ -1,0 +1,1 @@
+A practice pallet to conduct Substrate exercises
