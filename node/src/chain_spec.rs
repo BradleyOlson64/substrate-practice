@@ -99,6 +99,13 @@ fn testnet_genesis(
 	_enable_println: bool,
 ) -> serde_json::Value {
 	serde_json::json!({
+		"practice": {
+			"balances": vec![ (
+				get_account_id_from_seed::<sr25519::Public>("Alice"),
+				1 << 30
+				),
+			],
+		},
 		"balances": {
 			// Configure endowed accounts with initial balance of 1 << 60.
 			"balances": endowed_accounts.iter().cloned().map(|k| (k, 1u64 << 60)).collect::<Vec<_>>(),
