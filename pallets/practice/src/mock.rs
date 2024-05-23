@@ -1,6 +1,6 @@
 // Disabling annoying warning on construct_runtime! macro
 #![ allow(warnings)]
-use crate as pallet_template;
+use crate as pallet_practice;
 use frame_support::{
 	derive_impl,
 	traits::{ConstU16, ConstU64},
@@ -18,7 +18,7 @@ frame_support::construct_runtime!(
 	pub enum Test
 	{
 		System: frame_system,
-		TemplateModule: pallet_template,
+		TemplateModule: pallet_practice,
 	}
 );
 
@@ -49,12 +49,21 @@ impl frame_system::Config for Test {
 	type MaxConsumers = frame_support::traits::ConstU32<16>;
 }
 
-impl pallet_template::Config for Test {
+impl pallet_practice::Config for Test {
 	type RuntimeEvent = RuntimeEvent;
-	type WeightInfo = ();
+    type Balance = u128;
+	type WeightInfo = crate::weights::SubstrateWeight<Test>;
 }
 
 // Build genesis storage according to the mock runtime.
 pub fn new_test_ext() -> sp_io::TestExternalities {
 	frame_system::GenesisConfig::<Test>::default().build_storage().unwrap().into()
+}
+
+pub fn run_to_block(n: u64) {
+	while System::block_number() < n {
+		let head = System::finalize();
+		System::set_block_number(System::block_number() + 1);
+		System::initialize(&System::block_number(), &head.parent_hash, &head.digest);
+	}
 }
